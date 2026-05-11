@@ -1,0 +1,11 @@
+metric	value
+input_samples	119
+final_samples	119
+input_variants	14494877
+final_variants	6639276
+ds_out_of_range_sites	0
+related_pairs_ge_0.0884	0
+pca_samples	119
+overlap_BPD	4996043
+overlap_MDD	4832784
+overlap_SCZD	5128978

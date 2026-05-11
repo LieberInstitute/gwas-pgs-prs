@@ -1,0 +1,7 @@
+"metric","value"
+"BPD_significant_variants",3017
+"MDD_significant_variants",14448
+"BPD_MDD_shared_significant_variants",899
+"BPD_MDD_jaccard",0.0542677773753471
+"fraction_BPD_significant_shared_with_MDD",0.297978123964203
+"fraction_MDD_significant_shared_with_BPD",0.0622231450719823

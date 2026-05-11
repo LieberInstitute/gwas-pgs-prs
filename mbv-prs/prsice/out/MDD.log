@@ -1,0 +1,91 @@
+PRSice 2.3.5 (2021-09-20) 
+https://github.com/choishingwan/PRSice
+(C) 2016-2020 Shing Wan (Sam) Choi and Paul F. O'Reilly
+GNU General Public License v3
+If you use PRSice in any published work, please cite:
+Choi SW, O'Reilly PF.
+PRSice-2: Polygenic Risk Score Software for Biobank-Scale Data.
+GigaScience 8, no. 7 (July 1, 2019)
+2026-05-10 21:19:25
+/opt/sw/bin/PRSice_linux \
+    --a1 A1 \
+    --a2 A2 \
+    --all-score  \
+    --bar-levels 5e-08,1e-06,0.0001,0.001,0.01,0.05,0.1,0.5,1 \
+    --base prsice/base/MDD.base.tsv.gz \
+    --beta  \
+    --binary-target F \
+    --bp BP \
+    --chr CHR \
+    --clump-kb 250kb \
+    --clump-p 1.000000 \
+    --clump-r2 0.100000 \
+    --fastscore  \
+    --ignore-fid  \
+    --ld /dbdata/cdb/ref/1000g_hg38/1KG_EUR_chrpos \
+    --ld-type bed \
+    --no-regress  \
+    --num-auto 22 \
+    --out prsice/out/MDD \
+    --pheno prsice/target/dummy.pheno \
+    --pheno-col DUMMY \
+    --pvalue P \
+    --score sum \
+    --seed 4267530566 \
+    --snp SNP \
+    --stat BETA \
+    --target prsice/target/mbv_qc \
+    --thread 8 \
+    --type bgen
+
+Initializing Genotype file: prsice/target/mbv_qc (bgen) 
+
+Start processing MDD.base.tsv 
+================================================== 
+
+Base file: prsice/base/MDD.base.tsv.gz 
+GZ file detected. Header of file is: 
+CHR	BP	SNP	A1	A2	BETA	P 
+
+7362674 variant(s) observed in base file, with: 
+171260 variant(s) located on haploid chromosome 
+952138 ambiguous variant(s) excluded 
+6239276 total variant(s) included from base file 
+
+Loading Genotype info from target 
+================================================== 
+
+Assume phenotype file has header line: IID DUMMY 
+
+119 people (0 male(s), 0 female(s)) observed 
+119 founder(s) included 
+
+1534948 variant(s) not found in previous data 
+5104328 variant(s) included 
+
+Initializing Genotype file: 
+/dbdata/cdb/ref/1000g_hg38/1KG_EUR_chrpos (bed) 
+
+Loading Genotype info from reference 
+================================================== 
+
+633 people (305 male(s), 328 female(s)) observed 
+633 founder(s) included 
+
+56501605 variant(s) not found in previous data 
+5097545 variant(s) included 
+
+Phenotype file: prsice/target/dummy.pheno 
+Column Name of Sample ID: IID 
+Note: If the phenotype file does not contain a header, the 
+column name will be displayed as the Sample ID which is 
+expected. 
+
+There are a total of 1 phenotype to process 
+
+Start performing clumping 
+
+Number of variant(s) after clumping : 231809 
+
+Start calculating the scores 
+

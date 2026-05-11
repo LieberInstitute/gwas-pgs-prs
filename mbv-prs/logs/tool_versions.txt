@@ -1,0 +1,8 @@
+bcftools:
+bcftools 1.23.1
+Using htslib 1.23.1
+plink2:
+PLINK v2.0.0-a.7LM AVX2 Intel (11 Mar 2026)
+plink:
+PLINK v1.90b6.26 64-bit (2 Apr 2022)
+PRSice:

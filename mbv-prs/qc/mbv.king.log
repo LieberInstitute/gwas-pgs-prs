@@ -1,0 +1,29 @@
+PLINK v2.0.0-a.7LM AVX2 Intel (11 Mar 2026)
+Options in effect:
+  --extract qc/mbv.prune.prune.in
+  --king-table-filter 0.0884
+  --make-king-table
+  --out qc/mbv.king
+  --pfile qc/mbv.qc
+
+Hostname: srv16
+Working directory: /dbdata/cdb/gwas-pgs-prs/mbv-prs
+Start time: Sun May 10 20:55:02 2026
+
+Random number seed: 1778460902
+515432 MiB RAM detected, ~447884 available; reserving 257716 MiB for main
+workspace.
+Using up to 32 threads (change this with --threads).
+119 samples (0 females, 0 males, 119 ambiguous; 119 founders) loaded from
+qc/mbv.qc.psam.
+6639276 variants loaded from qc/mbv.qc.pvar.
+Note: No phenotype data present.
+--extract: 185745 variants remaining.
+185745 variants remaining after main filters.
+--make-king-table pass 1/1: Scanning for rare variants... done.
+9746 variants handled by initial scan (175999 remaining).
+--make-king-table: 185745 variants processed.
+Results written to qc/mbv.king.kin0 .
+--king-table-filter: 0 relationships reported (7021 filtered out).
+
+End time: Sun May 10 20:55:03 2026

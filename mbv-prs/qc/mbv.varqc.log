@@ -1,0 +1,30 @@
+PLINK v2.0.0-a.7LM AVX2 Intel (11 Mar 2026)
+Options in effect:
+  --geno 0.02
+  --maf 0.01
+  --make-pgen
+  --out qc/mbv.varqc
+  --pfile qc/mbv.dedup
+
+Hostname: srv16
+Working directory: /dbdata/cdb/gwas-pgs-prs/mbv-prs
+Start time: Sun May 10 20:54:38 2026
+
+Random number seed: 1778460878
+515432 MiB RAM detected, ~449758 available; reserving 257716 MiB for main
+workspace.
+Using up to 32 threads (change this with --threads).
+119 samples (0 females, 0 males, 119 ambiguous; 119 founders) loaded from
+qc/mbv.dedup.psam.
+13165088 variants loaded from qc/mbv.dedup.pvar.
+Note: No phenotype data present.
+Calculating allele frequencies... done.
+--geno: 6215286 variants removed due to missing genotype data.
+310526 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+6639276 variants remaining after main filters.
+Writing qc/mbv.varqc.psam ... done.
+Writing qc/mbv.varqc.pvar ... done.
+Writing qc/mbv.varqc.pgen ... done.
+
+End time: Sun May 10 20:54:44 2026

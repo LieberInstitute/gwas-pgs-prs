@@ -1,0 +1,57 @@
+2026-05-10 20:42:47	write input checksums
+2026-05-10 20:42:47	write sample lists
+2026-05-10 20:42:47	compare sample lists
+2026-05-10 20:42:47	write demographics summary
+2026-05-10 20:42:47	write input variant count
+2026-05-10 20:50:41	create normalized autosomal target BCF
+2026-05-10 20:52:38	write DS out of range sites
+2026-05-10 20:53:31	import target to PLINK2 PGEN
+2026-05-10 20:53:38	deduplicate target variants
+2026-05-10 20:54:44	apply variant missingness and MAF QC
+2026-05-10 20:54:48	apply sample missingness QC after variant QC
+2026-05-10 20:54:48	write control keep file
+2026-05-10 20:54:49	write controls HWE pass list
+2026-05-10 20:54:53	apply controls HWE pass list
+2026-05-10 20:54:54	append final variant count
+2026-05-10 20:54:55	write final sample missingness
+2026-05-10 20:54:56	write final variant missingness
+2026-05-10 20:54:58	write final allele frequencies
+2026-05-10 20:55:00	LD prune final target
+2026-05-10 20:55:02	compute target PCs
+2026-05-10 20:55:03	compute KING relatedness table
+2026-05-10 20:55:11	export QC target BCF with DS
+2026-05-10 20:55:16	index QC target BCF
+2026-05-10 20:55:20	export QC target BGEN for PRSice
+2026-05-10 20:55:31	bcftools score BPD
+2026-05-10 20:55:41	bcftools score MDD
+2026-05-10 20:55:52	bcftools score SCZD
+2026-05-10 20:56:24	write scoring overlap counts
+2026-05-10 20:56:54	make PRSice BPD base
+2026-05-10 20:57:23	make PRSice MDD base
+2026-05-10 20:57:56	make PRSice SCZD base
+2026-05-10 20:59:46	write final QC variant IDs
+2026-05-10 21:00:32	export chr-prefixed QC target BCF
+2026-05-10 21:00:32	write dummy PRSice phenotype
+2026-05-10 21:01:10	bcftools score BPD
+2026-05-10 21:01:47	bcftools score MDD
+2026-05-10 21:02:25	bcftools score SCZD
+2026-05-10 21:12:54	write scoring overlap counts
+2026-05-10 21:14:34	make deduplicated PRSice BPD base
+2026-05-10 21:15:14	make deduplicated PRSice MDD base
+2026-05-10 21:15:55	make deduplicated PRSice SCZD base
+2026-05-10 21:16:47	write PRSice ignore-fid dummy phenotype
+2026-05-10 21:19:25	PRSice BPD
+2026-05-10 21:22:06	PRSice MDD
+2026-05-10 21:25:14	PRSice SCZD
+2026-05-10 21:25:14	summarize PRS outputs
+2026-05-10 21:26:03	fix merged sample IDs and QC report
+2026-05-10 21:26:51	remove obsolete failed-run PRSice valid file
+2026-05-10 21:40:37	compute GraphPred vs PRSice correlations
+2026-05-10 21:47:15	generate GWAS significant overlap tables and Venn diagrams
+2026-05-10 21:48:33	add BPD low-count interpretation notes to GWAS overlap report
+2026-05-10 21:53:13	write post-workbook PRS and GWAS overlap notes
+2026-05-10 21:53:46	amend BPD low-count notes: MDD also excludes 23andMe
+2026-05-10 22:06:25	write approved diagnosis association plan and script
+2026-05-10 22:06:25	run PRS diagnosis association analysis
+2026-05-10 22:06:25	append diagnosis association notes
+2026-05-10 22:09:34	fold numeric PRS association summary into notes_stats_comments

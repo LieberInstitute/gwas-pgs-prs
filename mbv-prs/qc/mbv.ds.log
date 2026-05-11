@@ -1,0 +1,27 @@
+PLINK v2.0.0-a.7LM AVX2 Intel (11 Mar 2026)
+Options in effect:
+  --bcf qc/mbv.autosomal.snps.r8.maf01.norm.dsok.bcf dosage=DS
+  --double-id
+  --make-pgen
+  --out qc/mbv.ds
+
+Hostname: srv16
+Working directory: /dbdata/cdb/gwas-pgs-prs/mbv-prs
+Start time: Sun May 10 20:52:38 2026
+
+Random number seed: 1778460758
+515432 MiB RAM detected, ~449216 available; reserving 257716 MiB for main
+workspace.
+Using up to 32 threads (change this with --threads).
+--bcf: 13165088 variants scanned.
+--bcf: qc/mbv.ds-temporary.pgen + qc/mbv.ds-temporary.pvar.zst +
+qc/mbv.ds-temporary.psam written.
+119 samples (0 females, 0 males, 119 ambiguous; 119 founders) loaded from
+qc/mbv.ds-temporary.psam.
+13165088 variants loaded from qc/mbv.ds-temporary.pvar.zst.
+Note: No phenotype data present.
+Writing qc/mbv.ds.psam ... done.
+Writing qc/mbv.ds.pvar ... done.
+Writing qc/mbv.ds.pgen ... done.
+
+End time: Sun May 10 20:53:31 2026

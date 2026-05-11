@@ -1,0 +1,26 @@
+PLINK v2.0.0-a.7LM AVX2 Intel (11 Mar 2026)
+Options in effect:
+  --export bgen-1.2 bits=8 ref-first
+  --out prsice/target/mbv_qc
+  --pfile qc/mbv.qc
+
+Hostname: srv16
+Working directory: /dbdata/cdb/gwas-pgs-prs/mbv-prs
+Start time: Sun May 10 20:55:16 2026
+
+Random number seed: 1778460916
+515432 MiB RAM detected, ~448806 available; reserving 257716 MiB for main
+workspace.
+Using up to 32 threads (change this with --threads).
+119 samples (0 females, 0 males, 119 ambiguous; 119 founders) loaded from
+qc/mbv.qc.psam.
+6639276 variants loaded from qc/mbv.qc.pvar.
+Note: No phenotype data present.
+Warning: Unphased heterozygous hardcalls in partially-phased variants are
+poorly represented with bits=8.
+It is necessary to use e.g. --dosage-erase-threshold 0.006 to re-import them
+cleanly.
+Writing prsice/target/mbv_qc.bgen ... done.
+Writing prsice/target/mbv_qc.sample ... done.
+
+End time: Sun May 10 20:55:20 2026

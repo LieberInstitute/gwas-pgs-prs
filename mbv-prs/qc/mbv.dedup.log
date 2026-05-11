@@ -1,0 +1,25 @@
+PLINK v2.0.0-a.7LM AVX2 Intel (11 Mar 2026)
+Options in effect:
+  --make-pgen
+  --out qc/mbv.dedup
+  --pfile qc/mbv.ds
+  --rm-dup force-first list
+
+Hostname: srv16
+Working directory: /dbdata/cdb/gwas-pgs-prs/mbv-prs
+Start time: Sun May 10 20:53:31 2026
+
+Random number seed: 1778460811
+515432 MiB RAM detected, ~449260 available; reserving 257716 MiB for main
+workspace.
+Using up to 32 threads (change this with --threads).
+119 samples (0 females, 0 males, 119 ambiguous; 119 founders) loaded from
+qc/mbv.ds.psam.
+13165088 variants loaded from qc/mbv.ds.pvar.
+Note: No phenotype data present.
+Note: Skipping --rm-dup since no duplicate IDs are present.
+Writing qc/mbv.dedup.psam ... done.
+Writing qc/mbv.dedup.pvar ... done.
+Writing qc/mbv.dedup.pgen ... done.
+
+End time: Sun May 10 20:53:38 2026

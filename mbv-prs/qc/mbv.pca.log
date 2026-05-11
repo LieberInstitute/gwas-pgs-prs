@@ -1,0 +1,29 @@
+PLINK v2.0.0-a.7LM AVX2 Intel (11 Mar 2026)
+Options in effect:
+  --extract qc/mbv.prune.prune.in
+  --out qc/mbv.pca
+  --pca 10
+  --pfile qc/mbv.qc
+
+Hostname: srv16
+Working directory: /dbdata/cdb/gwas-pgs-prs/mbv-prs
+Start time: Sun May 10 20:55:00 2026
+
+Random number seed: 1778460900
+515432 MiB RAM detected, ~447808 available; reserving 257716 MiB for main
+workspace.
+Using up to 32 threads (change this with --threads).
+119 samples (0 females, 0 males, 119 ambiguous; 119 founders) loaded from
+qc/mbv.qc.psam.
+6639276 variants loaded from qc/mbv.qc.pvar.
+Note: No phenotype data present.
+--extract: 185745 variants remaining.
+Calculating allele frequencies... done.
+185745 variants remaining after main filters.
+Constructing GRM: done.
+Correcting for missingness... done.
+Extracting eigenvalues and eigenvectors... done.
+--pca: Eigenvectors written to qc/mbv.pca.eigenvec , and eigenvalues written to
+qc/mbv.pca.eigenval .
+
+End time: Sun May 10 20:55:02 2026
