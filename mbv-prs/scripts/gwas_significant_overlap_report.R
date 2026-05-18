@@ -22,7 +22,7 @@ read_sig <- function(label, path) {
   x <- read.table(pipe(cmd), sep = "\t", header = FALSE, quote = "",
                   comment.char = "", fill = TRUE,
                   col.names = c("CHROM", "POS", "ID", "REF", "ALT", "LP"))
-  x$LP <- as.numeric(x$LP)
+  x$LP <- suppressWarnings(as.numeric(x$LP))
   x <- x[is.finite(x$LP) & x$LP >= threshold_lp, ]
   x$disorder <- label
   x$variant_id <- paste(x$CHROM, x$POS, x$REF, x$ALT, sep = ":")
@@ -116,39 +116,43 @@ write.csv(pairwise_counts, file.path(outdir, "gwas_significant_pairwise_overlaps
 draw_venn <- function(counts_one, title, path) {
   ## fixed-circle schematic, not area-proportional
   vals <- setNames(counts_one$count, counts_one$region)
-  svg(path, width = 7, height = 5)
-  par(mar = c(0, 0, 2, 0))
+  fmt <- function(x) formatC(x, format = "d", big.mark = ",")
+
+  svg(path, width = 7.5, height = 5.4)
+  par(mar = c(0, 0, 2.5, 0))
   plot.new()
-  plot.window(xlim = c(0, 10), ylim = c(0, 7))
-  symbols(4, 4.1, circles = 2.25, inches = FALSE, add = TRUE,
+  plot.window(xlim = c(0, 10), ylim = c(-1.25, 7.8))
+  symbols(3.8, 4.25, circles = 2.25, inches = FALSE, add = TRUE,
           bg = adjustcolor("#D95F02", 0.30), fg = "#D95F02", lwd = 2)
-  symbols(6, 4.1, circles = 2.25, inches = FALSE, add = TRUE,
+  symbols(6.2, 4.25, circles = 2.25, inches = FALSE, add = TRUE,
           bg = adjustcolor("#1B9E77", 0.30), fg = "#1B9E77", lwd = 2)
-  symbols(5, 2.45, circles = 2.25, inches = FALSE, add = TRUE,
+  symbols(5.0, 2.45, circles = 2.25, inches = FALSE, add = TRUE,
           bg = adjustcolor("#7570B3", 0.30), fg = "#7570B3", lwd = 2)
-  text(2.6, 6.35, sprintf("BPD\nn=%s", vals["BPD_total"]), cex = 1.0)
-  text(7.4, 6.35, sprintf("MDD\nn=%s", vals["MDD_total"]), cex = 1.0)
-  text(5.0, 0.25, sprintf("SCZD\nn=%s", vals["SCZD_total"]), cex = 1.0)
-  text(3.1, 4.35, vals["BPD_only"], cex = 1.1)
-  text(6.9, 4.35, vals["MDD_only"], cex = 1.1)
-  text(5.0, 1.45, vals["SCZD_only"], cex = 1.1)
-  text(5.0, 4.85, vals["BPD_MDD_only"], cex = 1.1)
-  text(4.05, 3.0, vals["BPD_SCZD_only"], cex = 1.1)
-  text(5.95, 3.0, vals["MDD_SCZD_only"], cex = 1.1)
-  text(5.0, 3.55, vals["BPD_MDD_SCZD"], cex = 1.1, font = 2)
+
+  text(1.9, 7.25, sprintf("BPD\nn=%s", fmt(vals["BPD_total"])), cex = 0.95)
+  text(8.35, 7.25, sprintf("MDD\nn=%s", fmt(vals["MDD_total"])), cex = 0.95)
+  text(5.0, -0.95, sprintf("SCZD\nn=%s", fmt(vals["SCZD_total"])), cex = 0.95)
+  text(2.6, 4.82, fmt(vals["BPD_only"]), cex = 1.1)
+  text(7.45, 4.82, fmt(vals["MDD_only"]), cex = 1.1)
+  text(5.0, 1.02, fmt(vals["SCZD_only"]), cex = 1.1)
+  text(5.0, 6.05, fmt(vals["BPD_MDD_only"]), cex = 1.1)
+  text(3.35, 3.18, fmt(vals["BPD_SCZD_only"]), cex = 1.1)
+  text(6.75, 3.18, fmt(vals["MDD_SCZD_only"]), cex = 1.1)
+  text(5.0, 3.82, fmt(vals["BPD_MDD_SCZD"]), cex = 1.1, font = 2)
+
   title(main = title)
-  text(8.5, 0.7, sprintf("Union: %s", vals["union_total"]), cex = 0.9)
+  text(8.55, 0.8, sprintf("Union: %s", fmt(vals["union_total"])), cex = 0.85)
   dev.off()
 }
 
 draw_venn(
   counts[counts$universe == "exact_variant_CHROM_POS_REF_ALT", ],
-  sprintf("Genome-wide significant overlap, exact variant, P <= %.0e", threshold_p),
+  sprintf("P <= %.0e overlap, exact canonical variant (CHROM:POS:REF:ALT)", threshold_p),
   file.path(outdir, "gwas_significant_exact_variant_venn.svg")
 )
 draw_venn(
   counts[counts$universe == "position_CHROM_POS", ],
-  sprintf("Genome-wide significant overlap, position, P <= %.0e", threshold_p),
+  sprintf("P <= %.0e overlap, position only (CHROM:POS)", threshold_p),
   file.path(outdir, "gwas_significant_position_venn.svg")
 )
 
@@ -156,8 +160,9 @@ md <- file.path(outdir, "gwas_significant_overlap_report.md")
 sink(md)
 cat("# GWAS Significant Variant Overlap Report\n\n")
 cat(sprintf("Threshold: `P <= %.0e`, equivalent to `LP >= %.5f`.\n\n", threshold_p, threshold_lp))
-cat("Primary overlap unit: exact `CHROM:POS:REF:ALT` variant ID.\n")
-cat("Secondary overlap unit: `CHROM:POS` position ID.\n\n")
+cat("Primary overlap unit: exact canonical `CHROM:POS:REF:ALT` variant ID.\n")
+cat("Secondary overlap unit: `CHROM:POS` position ID.\n")
+cat("The exact and position diagrams are nearly identical because only three SCZD-only positions collapse when REF/ALT is ignored.\n\n")
 cat("## Exact Variant Counts\n\n")
 print(counts[counts$universe == "exact_variant_CHROM_POS_REF_ALT", c("region", "count")], row.names = FALSE)
 cat("\n## Position Counts\n\n")

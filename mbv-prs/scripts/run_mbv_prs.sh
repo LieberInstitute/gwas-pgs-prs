@@ -24,7 +24,7 @@ SCZD_PGS=/home/gpertea/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.publi
 THREADS=${THREADS:-8}
 AUTO_REGIONS=$(printf "chr%s," {1..22} | sed 's/,$//')
 
-mkdir -p qc scores_bcftools prsice/base prsice/target prsice/ref prsice/out logs scripts
+mkdir -p qc qc/gwas_variant_alignment scores_bcftools prsice/base prsice/target prsice/ref prsice/out logs scripts
 : > logs/commands_successful.tsv
 
 run_cmd() {
@@ -160,23 +160,26 @@ run_cmd "bcftools score SCZD" \
 run_bash "write scoring overlap counts" \
   "printf 'disorder\tvariants\n' > qc/scoring_overlap.tsv; printf 'BPD\t%s\n' \"\$('$BCF' isec -n=2 -w1 qc/mbv.qc.chr.bcf '$BPD_PGS' | wc -l)\" >> qc/scoring_overlap.tsv; printf 'MDD\t%s\n' \"\$('$BCF' isec -n=2 -w1 qc/mbv.qc.chr.bcf '$MDD_PGS' | wc -l)\" >> qc/scoring_overlap.tsv; printf 'SCZD\t%s\n' \"\$('$BCF' isec -n=2 -w1 qc/mbv.qc.chr.bcf '$SCZD_PGS' | wc -l)\" >> qc/scoring_overlap.tsv"
 
-## build PRSice base files from GWAS-VCF summary statistics
+## validate GWAS rsIDs against hg38 canonical variants and final target IDs
+run_bash "align GWAS variants with Postgres rsID map" \
+  "BCF='$BCF' TARGET_BCF=qc/mbv.qc.chr.bcf scripts/align_gwas_variants.sh BPD '$BPD_GWAS' MDD '$MDD_GWAS' SCZD '$SCZD_GWAS'"
+
+## build PRSice base files from validated canonical GWAS tables
 make_base() {
   local label=$1
-  local gwas=$2
+  local aligned=qc/gwas_variant_alignment/${label}.canonical.tsv.gz
   local out=prsice/base/${label}.base.tsv
   printf 'CHR\tBP\tSNP\tA1\tA2\tBETA\tP\n' > "$out"
-  "$BCF" query -f '%CHROM\t%POS\t%REF\t%ALT[\t%ES\t%LP]\n' \
-    -i 'N_ALT=1 && TYPE="snp" && FILTER!="IFFY" && FILTER!="REF_MISMATCH"' "$gwas" | \
-    awk 'BEGIN{OFS="\t"} $5!="." && $6!="." {chr=$1; sub(/^chr/,"",chr); snp=$1":"$2":"$3":"$4; if(!seen[snp]++){p=10^(-$6); print chr,$2,snp,$4,$3,$5,p}}' >> "$out"
+  gzip -cd "$aligned" | \
+    awk -F '\t' 'BEGIN{OFS="\t"} NR>1 && $14=="t" && $16!="t" {chr=$2; sub(/^chr/,"",chr); if(!seen[$4]++) print chr,$3,$4,$9,$10,$11,$12}' >> "$out"
   gzip -f "$out"
 }
 
-make_base BPD "$BPD_GWAS"
+make_base BPD
 printf '%s\t%s\n' "$(date '+%F %T')" "make PRSice BPD base" >> logs/commands_successful.tsv
-make_base MDD "$MDD_GWAS"
+make_base MDD
 printf '%s\t%s\n' "$(date '+%F %T')" "make PRSice MDD base" >> logs/commands_successful.tsv
-make_base SCZD "$SCZD_GWAS"
+make_base SCZD
 printf '%s\t%s\n' "$(date '+%F %T')" "make PRSice SCZD base" >> logs/commands_successful.tsv
 
 ## run PRSice fixed-threshold scores only
