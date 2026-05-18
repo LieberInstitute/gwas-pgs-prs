@@ -16,6 +16,16 @@ All main outputs are BCF files with matching `.bcf.csi` indexes. They use GRCh38
 
 The converted GWAS BCFs preserve the association summary statistics as GWAS-VCF FORMAT fields. The PGS BCFs are reduced outputs from `+pgs` and contain only the PGS loading/effect score in FORMAT/ES.
 
+## Source GWAS Data
+
+All three source files are public PGC summary statistics listed in the PGC download catalogue at https://pgc.unc.edu/for-researchers/download-results/. The European-ancestry, no-23andMe file was used where available.
+
+| Disorder | Local source file used | Upstream file | Paper and DOI | Download location |
+|---|---|---|---|---|
+| BPD | `BPD/bip2024_eur_no23andMe.gz` | `bip2024_eur_no23andMe.gz` | O'Connell KS, Koromina M, van der Veen T, et al. Genomics yields biological and phenotypic insights into bipolar disorder. Nature. doi:10.1038/s41586-024-08468-9 | Figshare record https://doi.org/10.6084/m9.figshare.27216117; direct file https://ndownloader.figshare.com/files/49760772 |
+| MDD | `MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.tsv.gz` | `pgc-mdd2025_no23andMe_eur_v3-49-24-11.tsv.gz` | Adams MJ, Streit F, Meng X, Awasthi S, et al. Trans-ancestry genome-wide study of depression identifies 697 associations implicating cell types and pharmacotherapies. Cell. doi:10.1016/j.cell.2024.12.002 | Figshare record https://doi.org/10.6084/m9.figshare.27061255; direct file https://ndownloader.figshare.com/files/51487019 |
+| SCZD | `SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.vcf.tsv.gz` | `PGC3_SCZ_wave3.european.autosome.public.v3.vcf.tsv.gz` | Trubetskoy V, Pardinas AF, Qi T, et al. Mapping genomic loci implicates genes and synaptic biology in schizophrenia. Nature. doi:10.1038/s41586-022-04434-5 | Figshare record https://doi.org/10.6084/m9.figshare.19426775; direct file https://ndownloader.figshare.com/files/34517828 |
+
 ## VCF Columns and IDs
 
 Each BCF uses standard VCF columns:
