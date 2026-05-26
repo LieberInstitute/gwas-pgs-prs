@@ -1,0 +1,2 @@
+label	base_file	target_prefix	target_type	ld_ref	out_prefix
+BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/prsice/base/BPD.base.tsv.gz	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/target/prsice/mbv_qc	bgen	/dbdata/cdb/ref/1000g_hg38/1KG_EUR_chrpos	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/prsice/out/BPD

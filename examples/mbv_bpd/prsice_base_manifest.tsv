@@ -1,0 +1,2 @@
+label	gwas_bcf	output_base	target_bcf
+BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/gwas/BPD.hg38.bcf	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/prsice/base/BPD.base.tsv.gz	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/target/qc/mbv.qc.chr.bcf

@@ -1,0 +1,2 @@
+label	gwas_bcf	ldgm_vcfs_file	beta_cov	max_alpha_hat2	exclude_expr	output_bcf
+BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/gwas/BPD.hg38.bcf	/dbdata/cdb/ref/lgdms/GRCh38/ldgm-vcfs.EUR.list	5e-8	0.001	FILTER="IFFY"	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/pgs/BPD.pgs.bcf

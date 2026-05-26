@@ -1,0 +1,3 @@
+method	label	path	sample_col	score_col	threshold
+GraphPred_bcftools	BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/scores_bcftools/BPD.graphpred.tsv	SAMPLE	BIP_2024.EUR_pgs_a0.5_b5e-08	.
+PRSice_C+T	BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/prsice/out/BPD.all_score	IID	Pt_0.05	0.05
