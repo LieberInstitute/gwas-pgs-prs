@@ -1,0 +1,2 @@
+label	base_file	prsice_prefix	output_dir
+BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/prsice/base/BPD.base.tsv.gz	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/prsice/out/BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/prsice_model_export

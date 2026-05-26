@@ -1,0 +1,2 @@
+label	target_bcf	score_bcf	output_tsv
+BPD	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/target/qc/mbv.qc.chr.bcf	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/pgs/BPD.pgs.bcf	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/scores_bcftools/BPD.graphpred.tsv

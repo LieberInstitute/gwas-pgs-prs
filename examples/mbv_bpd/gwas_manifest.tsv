@@ -1,0 +1,2 @@
+label	source	sample_name	source_build	source_fasta	target_fasta	chain	columns_file	columns_preset	output_bcf
+BPD	/dbdata/cdb/gwas-pgs-prs/GWAS/BPD/bip2024_eur_no23andMe.gz	BIP_2024.EUR	GRCh37	/dbdata/cdb/ref/GRCh37/human_g1k_v37.fasta	/dbdata/cdb/ref/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna	/dbdata/cdb/ref/hg19ToHg38.over.chain.gz	/dbdata/cdb/gwas-pgs-prs/colheaders.tsv	.	/dbdata/cdb/gwas-pgs-prs/work/mbv_bpd/gwas/BPD.hg38.bcf
