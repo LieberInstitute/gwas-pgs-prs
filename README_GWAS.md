@@ -1,155 +1,148 @@
-# GWAS Summary Statistics on GRCh38
+# European GWAS and PGS files on GRCh38
 
-This directory contains psychiatric GWAS summary statistics converted to GWAS-VCF BCF on GRCh38 and matched PGS loading outputs from the BCFtools `+pgs` plugin.
+The current BD and MDD datasets combine the public European no-23andMe
+meta-analysis with the independent European 23andMe component. SCZD remains
+the public European dataset. GWAS files use GWAS-VCF BCF on GRCh38; PGS files
+are EUR LDGM GraphPred loadings from `bcftools +pgs`.
 
-The source summary statistics were normalized with `bcftools +munge`, lifted from GRCh37/hg19 to GRCh38 with `bcftools +liftover`, sorted, and indexed. PGS loadings were computed from the converted GWAS BCFs with the EUR LDGM file and `bcftools +pgs`.
+Large BCF, index, compressed table, LDGM, log, and generated output files stay
+under `~/work/ref/GWAS` and are not committed to Git.
 
-All main outputs are BCF files with matching `.bcf.csi` indexes. They use GRCh38 contig names with `chr` prefixes.
+## Current files
 
-## Main Files
+| Trait | GWAS BCF | Sample | GWAS records | PGS BCF | PGS sample | PGS records |
+|---|---|---|---:|---|---|---:|
+| BD | `BD/bip2024_eur.hg38.bcf` | `BD_2024_FULL_EUR` | 6,394,788 | `BD/bip2024_eur.hg38.pgs.b5e-8.bcf` | `BD_2024_FULL_EUR_pgs_a0.5_b5e-08` | 5,227,123 |
+| MDD | `MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.bcf` | `MDD_2025_FULL_EUR` | 6,656,222 | `MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.pgs.b2e-8.bcf` | `MDD_2025_FULL_EUR_pgs_a0.5_b2e-08` | 5,339,102 |
+| SCZD | `SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.bcf` | `SCZ_2022.EUR` | 7,658,487 | `SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.bcf` | `SCZ_2022.EUR_pgs_a0.5_b2e-07` | 6,076,466 |
 
-| Disorder | Converted GWAS BCF | Sample | Records | PGS BCF | PGS sample | PGS records |
-|---|---|---:|---:|---|---:|---:|
-| BPD | `BPD/bip2024_eur_no23andMe.hg38.bcf` | `BIP_2024.EUR` | 6938764 | `BPD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf` | `BIP_2024.EUR_pgs_a0.5_b5e-08` | 5660257 |
-| MDD | `MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.bcf` | `MDD_2025` | 7362678 | `MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.pgs.b2e-8.bcf` | `MDD_2025_pgs_a0.5_b2e-08` | 5737561 |
-| SCZD | `SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.bcf` | `SCZ_2022.EUR` | 7658487 | `SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.bcf` | `SCZ_2022.EUR_pgs_a0.5_b2e-07` | 6076466 |
+The full BD and MDD names deliberately omit `_no23andMe`. Each BCF has a
+matching `.bcf.csi` index. The full integrations also have stable tabular
+exports:
 
-The converted GWAS BCFs preserve the association summary statistics as GWAS-VCF FORMAT fields. The PGS BCFs are reduced outputs from `+pgs` and contain only the PGS loading/effect score in FORMAT/ES.
+```text
+BD/bip2024_eur.hg38.meta.tsv.gz
+BD/bip2024_eur.hg38.prsice.tsv.gz
+MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.meta.tsv.gz
+MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.prsice.tsv.gz
+```
 
-## Source GWAS Data
+The canonical `meta.tsv.gz` table contains `CHROM`, `POS`, `RSID`, canonical
+`CHROM:POS:REF:ALT`, alleles, beta, SE, P, OR, and sample-size fields. The
+`prsice.tsv.gz` table contains `CHR BP SNP A1 A2 BETA P` and is ready for
+PRSice with `--beta`. Shizhong's OR-based method can use `OR` from the
+canonical table; new shared code should use `BETA` directly.
 
-All three source files are public PGC summary statistics listed in the PGC download catalogue at https://pgc.unc.edu/for-researchers/download-results/. The European-ancestry, no-23andMe file was used where available.
+## Source data
 
-| Disorder | Local source file used | Upstream file | Paper and DOI | Download location |
-|---|---|---|---|---|
-| BPD | `BPD/bip2024_eur_no23andMe.gz` | `bip2024_eur_no23andMe.gz` | O'Connell KS, Koromina M, van der Veen T, et al. Genomics yields biological and phenotypic insights into bipolar disorder. Nature. doi:10.1038/s41586-024-08468-9 | Figshare record https://doi.org/10.6084/m9.figshare.27216117; direct file https://ndownloader.figshare.com/files/49760772 |
-| MDD | `MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.tsv.gz` | `pgc-mdd2025_no23andMe_eur_v3-49-24-11.tsv.gz` | Adams MJ, Streit F, Meng X, Awasthi S, et al. Trans-ancestry genome-wide study of depression identifies 697 associations implicating cell types and pharmacotherapies. Cell. doi:10.1016/j.cell.2024.12.002 | Figshare record https://doi.org/10.6084/m9.figshare.27061255; direct file https://ndownloader.figshare.com/files/51487019 |
-| SCZD | `SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.vcf.tsv.gz` | `PGC3_SCZ_wave3.european.autosome.public.v3.vcf.tsv.gz` | Trubetskoy V, Pardinas AF, Qi T, et al. Mapping genomic loci implicates genes and synaptic biology in schizophrenia. Nature. doi:10.1038/s41586-022-04434-5 | Figshare record https://doi.org/10.6084/m9.figshare.19426775; direct file https://ndownloader.figshare.com/files/34517828 |
+| Trait | Component | Local source | Release |
+|---|---|---|---|
+| BD | Public EUR, no 23andMe | `BD/bip2024_eur_no23andMe.gz` | O'Connell et al., doi:10.1038/s41586-024-08468-9; Figshare doi:10.6084/m9.figshare.27216117 |
+| BD | 23andMe-only EUR | `23andMe_MDD_BD/Bipolar-Disorder-O_Connell-2025/OConnell_2025_bipolar_european-7.0/bipolar.dat.gz` | association release 7.0 |
+| MDD | Public EUR, no 23andMe | `MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.tsv.gz` | Adams et al., doi:10.1016/j.cell.2024.12.002; Figshare doi:10.6084/m9.figshare.27061255 |
+| MDD | 23andMe-only EUR | `23andMe_MDD_BD/MDD-Adams-2025/Adams_2025_mdd_european-7.2/mdd.dat.gz` | association release 7.2 |
+| BD and MDD | 23andMe EUR annotation | `23andMe_MDD_BD/7.2-Annotations/v7.2_europe/all_snp_info.txt.gz` | annotation release 7.2 |
+| SCZD | Public EUR | `SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.vcf.tsv.gz` | Trubetskoy et al., doi:10.1038/s41586-022-04434-5; Figshare doi:10.6084/m9.figshare.19426775 |
 
-## VCF Columns and IDs
+The BD v7.0 association file was delivered without v7.0 European annotation.
+The integration used the supplied v7.2 annotation only after explicit risk
+acknowledgement. Published sentinel comparisons support the mapping, but BD
+remains provisional until 23andMe supplies v7.0 annotation or confirms ID
+stability. The BD paper's DENTIST exclusions were not available and therefore
+were not replicated.
 
-Each BCF uses standard VCF columns:
+## BD and MDD integration
 
-| Column | Meaning |
-|---|---|
-| `CHROM` | GRCh38 chromosome or contig, usually `chr1` to `chr22` for these autosomal outputs |
-| `POS` | 1-based GRCh38 position |
-| `ID` | source variant identifier from the GWAS input |
-| `REF` | GRCh38 reference allele after liftover |
-| `ALT` | alternate/effect allele used by GWAS-VCF FORMAT fields |
-| `QUAL` | unset in these files |
-| `FILTER` | site filter status |
-| `INFO` | liftover metadata, when applicable |
-| `FORMAT` | per-sample GWAS or PGS fields |
-| sample column | one synthetic sample holding summary statistics |
+The components were not concatenated. For each exact allele-aligned variant,
+the script combined log-odds estimates by standard-error inverse-variance
+fixed-effect meta-analysis with `bcftools +metal`, applied the paper's
+effective-N coverage threshold, and lifted the combined result once to GRCh38.
 
-If a dbSNP rsID is present, it is in VCF column 3, `ID`. Not every source identifier is an rsID: MDD and SCZD include some `chr:pos_ref_alt` style IDs. Current ID coverage:
+| Trait | Maximum NE | Minimum retained NE | GRCh38 records | Variants at P <= 5e-8 |
+|---|---:|---:|---:|---:|
+| BD | 440,999 | 330,749.25 (75%) | 6,394,788 | 10,753 |
+| MDD | 1,577,200 | 1,261,760 (80%) | 6,656,222 | 36,787 |
 
-| File type | BPD rsIDs | MDD rsIDs | SCZD rsIDs |
-|---|---:|---:|---:|
-| Converted GWAS BCF | 6938764 / 6938764 | 7362102 / 7362678 | 7637489 / 7658487 |
-| PGS BCF | 5660257 / 5660257 | 5737542 / 5737561 | 6075044 / 6076466 |
+Significant-variant counts are not counts of independent signals or loci.
+Details, equations, validation, commands, checksums, and known limits are in
+`mbv-prs/GWAS_23andMe_integration.md` and each
+`full_eur_integration/*.integration-report.md` external run report.
 
-For harmonization with genotype VCF/BCF files, match on GRCh38 `CHROM`, `POS`, `REF`, and `ALT`. Treat `ES` as relative to `ALT`.
+## GWAS BCF fields
 
-## Converted GWAS BCF FORMAT Fields
+All current GWAS BCF effects are relative to `ALT`. Match genotype data by
+GRCh38 `CHROM`, `POS`, `REF`, and `ALT`, not rsID alone.
 
-The converted `.hg38.bcf` files store GWAS summary statistics in FORMAT fields. Field values are per alternate allele (`Number=A`).
+The integrated BD and MDD BCFs contain these FORMAT fields:
 
 | FORMAT field | Meaning |
 |---|---|
-| `NS` | variant-specific number of samples or individuals with called genotypes |
-| `SI` | imputation accuracy score |
-| `NC` | variant-specific number of cases |
-| `ES` | effect size estimate relative to `ALT`; BETA sources stay beta, OR sources are converted by `+munge` to log effect |
+| `NS` | variant-specific total sample count |
+| `NC` | variant-specific case count |
+| `ES` | log-odds beta relative to `ALT` |
 | `SE` | standard error of `ES` |
-| `LP` | `-log10(P)` for the effect estimate |
-| `NE` | variant-specific effective sample size |
-| `AF` | alternate allele frequency in the trait subset; present in BPD only |
-| `I2` | Cochran heterogeneity I squared; present in BPD and MDD |
-| `CQ` | Cochran Q `-log10(P)`; present in BPD only |
-| `ED` | effect direction across studies; present in BPD only |
+| `LP` | `-log10(P)` |
+| `NE` | effective sample size |
+| `I2` | Cochran heterogeneity I squared |
+| `CQ` | Cochran Q `-log10(P)` |
+| `ED` | effect direction across components |
+| `SI` | combined imputation quality; missing for integrated BD and MDD |
 
-Per-disorder FORMAT layouts:
+Public HRC INFO and 23andMe `avg.rsqr` are component-specific and cannot be
+combined by a justified arithmetic rule. `SI` is therefore missing rather
+than fabricated. Code requiring `SI >= 0.8` must explicitly retain missing
+`SI` for these integrated files or use a separately documented component QC
+rule.
 
-| Disorder | FORMAT fields in converted GWAS BCF |
-|---|---|
-| BPD | `NS:SI:NC:ES:SE:LP:AF:NE:I2:CQ:ED` |
-| MDD | `NS:SI:NC:ES:SE:LP:NE:I2` |
-| SCZD | `NS:SI:NC:ES:SE:LP:NE` |
+Current rsID coverage is 6,360,316 of 6,394,788 BD variants and 6,645,867 of
+6,656,222 MDD variants. Canonical coordinates remain the primary identifier.
 
-## PGS BCF FORMAT Fields
+The SCZD BCF retains `NS:SI:NC:ES:SE:LP:NE`. PGS BCFs are reduced outputs
+containing only the GraphPred loading in `FORMAT/ES`. Liftover can add `FLIP`
+and `SWAP` INFO annotations. `IFFY` and `REF_MISMATCH` are the defined site
+filters.
 
-The `.hg38.pgs.*.bcf` files are the `bcftools +pgs` outputs. They contain:
+The shared source-header mapping is
+`mbv-prs/scripts/gwas_meta_colheaders.tsv`. It maps common SNP, coordinate,
+allele, beta/OR, SE, P, INFO, sample-size, heterogeneity, direction, and
+frequency headers to `bcftools +munge` fields. Case-only and control-only
+frequencies are intentionally not treated as one overall effect-allele
+frequency.
 
-| FORMAT field | Meaning |
-|---|---|
-| `ES` | GraphPred PGS loading/effect score relative to `ALT` |
+## PGS generation
 
-The PGS outputs were created with EUR LDGM and these options:
+The same explicit parameters used for the old no-23andMe loadings were retained
+so that the GWAS input is the intended change:
 
-| Disorder | `--beta-cov` | `--max-alpha-hat2` | Input exclusion |
-|---|---:|---:|---|
-| BPD | `5e-8` | `0.001` | `FILTER="IFFY"` |
-| MDD | `2e-8` | `0.0005` | `FILTER="IFFY"` |
-| SCZD | `2e-7` | `0.002` | `FILTER="IFFY"` |
+| Trait | EUR LDGM | `--beta-cov` | `--max-alpha-hat2` | Seed | Exclusion |
+|---|---|---:|---:|---:|---|
+| BD | `1kg_ldgm.EUR.bcf` | `5e-8` | `0.001` | 1,785,102,265 | `FILTER="IFFY"` |
+| MDD | `1kg_ldgm.EUR.bcf` | `2e-8` | `0.0005` | 1,785,102,085 | `FILTER="IFFY"` |
+| SCZD | `1kg_ldgm.EUR.bcf` | `2e-7` | `0.002` | see archived log | `FILTER="IFFY"` |
 
-## INFO and FILTER Fields
+Exact integration, installation, and `+pgs` commands are in
+`tutorial_ldgm_gwas_hg38_pgs.md`.
 
-The converted GWAS and PGS BCFs share liftover INFO definitions:
+## Archived no-23andMe files
 
-| INFO field | Meaning |
-|---|---|
-| `FLIP` | allele was strand-flipped during liftover |
-| `SWAP` | alternate allele became reference during liftover; `-1` means a new reference allele was added |
+These remain available for reproduction and direct before/after comparison,
+but they are not the current BD/MDD defaults:
 
-Most records have `INFO=.`. Records with liftover changes may have `FLIP`, `SWAP=1`, `SWAP=-1`, or both.
+| Trait | GWAS BCF | Records | PGS BCF | PGS records |
+|---|---|---:|---|---:|
+| BD | `BD/bip2024_eur_no23andMe.hg38.bcf` | 6,938,764 | `BD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf` | 5,660,257 |
+| MDD | `MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.bcf` | 7,362,678 | `MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.pgs.b2e-8.bcf` | 5,737,561 |
 
-The shared FILTER definitions are:
+The full files can have fewer rows despite larger cohorts because the full
+paper workflows impose high effective-N coverage and the integration retains
+exactly mapped, QC-passing, shared autosomal SNVs.
 
-| FILTER | Meaning |
-|---|---|
-| `IFFY` | reference allele could not be determined |
-| `REF_MISMATCH` | reference does not match any allele |
-
-The inspected outputs currently have all records unfiltered as `FILTER=.`.
-
-## colheaders.tsv
-
-`colheaders.tsv` is the shared two-column header map used by `bcftools +munge` to translate source summary-statistic headers into canonical GWAS-VCF inputs. It is not disorder-specific.
-
-Key mappings:
-
-| Source headers | Canonical field |
-|---|---|
-| `SNP`, `ID` | `SNP` |
-| `CHR`, `CHROM`, `#CHROM` | `CHR` |
-| `BP`, `POS` | `BP` |
-| `A1`, `EA` | `A1` |
-| `A2`, `NEA` | `A2` |
-| `OR` | `OR` |
-| `BETA` | `BETA` |
-| `SE` | `SE` |
-| `P`, `PVAL` | `P` |
-| `INFO`, `IMPINFO` | `INFO` |
-| `NCAS`, `Nca` | `N_CAS` |
-| `NCON`, `Nco` | `N_CON` |
-| `NEFF` | `NEFF` |
-| `NEFFDIV2`, `Neff_half` | `NEFFDIV2` |
-| `HETI`, `HetISqt` | `HET_I2` |
-| `HETPVAL`, `HetPVa` | `HET_P` |
-| `Direction` | `DIRE` |
-| `HRC_FRQ_A1` | `FRQ` |
-
-`FCAS` and `FCON` are intentionally not mapped because they are case and control allele frequencies, not one overall effect allele frequency.
-
-## Inspection Commands
-
-Useful checks:
+## Inspection
 
 ```bash
-bcftools view -h BPD/bip2024_eur_no23andMe.hg38.bcf
-bcftools query -l MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.bcf
-bcftools index -n SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.bcf
-bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT[\t%ES]\n' BPD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf | head
+bcftools view -h BD/bip2024_eur.hg38.bcf
+bcftools query -l MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.bcf
+bcftools index -n BD/bip2024_eur.hg38.pgs.b5e-8.bcf
+bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT[\t%ES]\n' \
+  MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.bcf | head
 ```

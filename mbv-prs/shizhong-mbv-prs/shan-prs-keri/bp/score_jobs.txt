@@ -1,0 +1,1 @@
+plink2 --pfile /dcs05/lieber/hanlab/shan/prs/keri/data/merged_maf01_snps --score ./out/profile header ignore-dup-ids --q-score-range prange ./out/profile_p header --threads 1 --out ./out/score

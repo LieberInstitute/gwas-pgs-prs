@@ -17,3 +17,14 @@ prsice/target/*.bgen
 !qc/*.log
 !prsice/target/*.sample
 !prsice/target/*.pheno
+
+## generated analysis work products archived outside Git
+generated/
+GWAS/*/*.tsv
+bpd2024_public_loci/*.csv
+bpd2024_public_loci/*.tsv
+gwas_sig_overlaps/*.csv
+gwas_sig_overlaps/*.svg
+prs_diagnosis_assoc/
+shizhong-mbv-prs/PRS_*.csv
+shizhong-mbv-prs/shan-prs-keri/*/out/

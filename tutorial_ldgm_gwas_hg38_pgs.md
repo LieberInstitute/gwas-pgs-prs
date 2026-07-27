@@ -1,6 +1,9 @@
 # Tutorial: LDGM Setup, GWAS GRCh38 Conversion, and PGS Computation
 
-This document replaces the audit-style work log `work_26-04-28_19-48_1817973.md` with a step-by-step tutorial. It preserves the exact commands used for the 2024 BIP, 2025 MDD, and 2022 SCZ EUR analyses, and it records file provenance more explicitly.
+This reusable tutorial preserves the exact commands used for the 2024 BIP,
+2025 MDD, and 2022 SCZ EUR analyses and records file provenance. The original
+conversion was run in April 2026; the full BD and MDD update was run in July
+2026. The earlier audit log was `work_26-04-28_19-48_1817973.md`.
 
 ## 1. Software Context
 
@@ -67,7 +70,7 @@ Study: Bipolar Disorder 2024
 Publication DOI: 10.1038/s41586-024-08468-9
 Dataset page from freescore examples: http://figshare.com/articles/dataset/bip2024/27216117
 File URL used: https://ndownloader.figshare.com/files/49760772
-Local file: ~/work/ref/GWAS/BPD/bip2024_eur_no23andMe.gz
+Local file: ~/work/ref/GWAS/BD/bip2024_eur_no23andMe.gz
 ```
 
 MDD 2025 EUR no23andMe was already local:
@@ -140,17 +143,17 @@ The BIP file was downloaded with:
 
 ```bash
 set -euo pipefail
-mkdir -p "$HOME/work/ref/GWAS/BPD"
-if [ ! -s "$HOME/work/ref/GWAS/BPD/bip2024_eur_no23andMe.gz" ]; then
-  curl -L --fail --show-error -o "$HOME/work/ref/GWAS/BPD/bip2024_eur_no23andMe.gz" https://ndownloader.figshare.com/files/49760772
+mkdir -p "$HOME/work/ref/GWAS/BD"
+if [ ! -s "$HOME/work/ref/GWAS/BD/bip2024_eur_no23andMe.gz" ]; then
+  curl -L --fail --show-error -o "$HOME/work/ref/GWAS/BD/bip2024_eur_no23andMe.gz" https://ndownloader.figshare.com/files/49760772
 fi
-ls -lh "$HOME/work/ref/GWAS/BPD/bip2024_eur_no23andMe.gz"
+ls -lh "$HOME/work/ref/GWAS/BD/bip2024_eur_no23andMe.gz"
 ```
 
 The downloaded file size was:
 
 ```text
-332M /home/gpertea/work/ref/GWAS/BPD/bip2024_eur_no23andMe.gz
+332M /home/gpertea/work/ref/GWAS/BD/bip2024_eur_no23andMe.gz
 ```
 
 ## 5. Create Column Header Mapping
@@ -215,7 +218,7 @@ COL="$HOME/work/ref/GWAS/colheaders.tsv"
 SRC="$HOME/work/ref/GRCh37/human_g1k_v37.fasta"
 DST="$HOME/work/ref/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 CHAIN="$HOME/work/ref/hg19ToHg38.over.chain.gz"
-cd "$HOME/work/ref/GWAS/BPD"
+cd "$HOME/work/ref/GWAS/BD"
 $BCF +munge --no-version -Ou -C "$COL" -f "$SRC" -s BIP_2024.EUR bip2024_eur_no23andMe.gz | \
   $BCF +liftover --no-version -Ou -- -s "$SRC" -f "$DST" -c "$CHAIN" | \
   $BCF sort -o bip2024_eur_no23andMe.hg38.bcf -Ob --write-index
@@ -305,7 +308,7 @@ set -euo pipefail
 export BCFTOOLS_PLUGINS=/opt/sw/bcf-plugins
 BCF=/opt/sw/bin/bcftools
 LDGM="$HOME/work/ref/lgdms/GRCh38/1kg_ldgm.EUR.bcf"
-cd "$HOME/work/ref/GWAS/BPD"
+cd "$HOME/work/ref/GWAS/BD"
 $BCF +pgs --no-version --beta-cov 5e-8 --max-alpha-hat2 0.001 --exclude 'FILTER="IFFY"' bip2024_eur_no23andMe.hg38.bcf "$LDGM" --output bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf --output-type b --log bip2024_eur_no23andMe.hg38.pgs.b5e-8.log --write-index
 ```
 
@@ -346,7 +349,7 @@ Check converted GWAS BCFs:
 
 ```bash
 BCF=/opt/sw/bin/bcftools
-for f in "$HOME/work/ref/GWAS/BPD/bip2024_eur_no23andMe.hg38.bcf" "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.bcf" "$HOME/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.bcf"; do
+for f in "$HOME/work/ref/GWAS/BD/bip2024_eur_no23andMe.hg38.bcf" "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.bcf" "$HOME/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.bcf"; do
   echo "== $f =="
   test -s "$f" && test -s "$f.csi" && echo indexed=yes
   printf 'sample: '; $BCF query -l "$f"
@@ -360,7 +363,7 @@ Check PGS BCFs:
 
 ```bash
 BCF=/opt/sw/bin/bcftools
-for f in "$HOME/work/ref/GWAS/BPD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf" "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.pgs.b2e-8.bcf" "$HOME/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.bcf"; do
+for f in "$HOME/work/ref/GWAS/BD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf" "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.pgs.b2e-8.bcf" "$HOME/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.bcf"; do
   echo "== $f =="
   test -s "$f" && test -s "$f.csi" && echo indexed=yes
   printf 'sample: '; $BCF query -l "$f"
@@ -372,7 +375,7 @@ done
 Extract PGS summaries from logs:
 
 ```bash
-for f in "$HOME/work/ref/GWAS/BPD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.log" "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.pgs.b2e-8.log" "$HOME/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.log"; do
+for f in "$HOME/work/ref/GWAS/BD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.log" "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.pgs.b2e-8.log" "$HOME/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.log"; do
   echo "== $f =="
   perl -pe 's/\e\[[0-9;]*[A-Za-z]//g; s/\r/\n/g' "$f" | rg '^(=== PARAMETERS ===|alpha:|betaCov:|heritability|max alpha|random seed|sigmasq|=== SUMMARY ===|.*non_missing=|Tr\(|Advised options:)'
 done
@@ -423,7 +426,7 @@ Advised options: --alpha-param -0.5000 --beta-cov 1.643e-07 --max-alpha-hat2 0.0
 Converted GRCh38 GWAS BCFs:
 
 ```text
-~/work/ref/GWAS/BPD/bip2024_eur_no23andMe.hg38.bcf
+~/work/ref/GWAS/BD/bip2024_eur_no23andMe.hg38.bcf
 ~/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.bcf
 ~/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.bcf
 ```
@@ -431,7 +434,7 @@ Converted GRCh38 GWAS BCFs:
 PGS BCFs:
 
 ```text
-~/work/ref/GWAS/BPD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf
+~/work/ref/GWAS/BD/bip2024_eur_no23andMe.hg38.pgs.b5e-8.bcf
 ~/work/ref/GWAS/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.hg38.pgs.b2e-8.bcf
 ~/work/ref/GWAS/SCZD/PGC3_SCZ_wave3.european.autosome.public.v3.hg38.pgs.b2e-7.bcf
 ```
@@ -444,3 +447,99 @@ Each BCF has a matching `.csi` index.
 - This tutorial records the LDGM origin as the Broad SCORE software page and its `ldgms.GRCh38.zip` download.
 - The freescore examples page was used to select the GWAS download URLs and PGS parameters for BIP, MDD, and SCZ.
 - The MDD and SCZ files were already local in `~/work/ref/GWAS`; their original local download commands were not part of this session.
+
+## 12. Full EUR update with 23andMe
+
+The BD and MDD files above are retained as historical no-23andMe inputs. The
+current full-European files combine each public no-23andMe meta-analysis with
+the independent 23andMe-only European component by inverse-variance fixed-effect
+meta-analysis. They are not row-concatenated. See
+`mbv-prs/GWAS_23andMe_integration.md` for the method and caveats.
+
+Integration commands, run from the repository root:
+
+```bash
+set -euo pipefail
+mbv-prs/scripts/integrate_23andme_gwas.sh \
+  --trait BD \
+  --out-prefix "$HOME/work/ref/GWAS/BD/full_eur_integration/bip2024_eur" \
+  --confirm-no-sample-overlap \
+  --allow-bd-v7.2-annotations \
+  --threads 8
+
+mbv-prs/scripts/integrate_23andme_gwas.sh \
+  --trait MDD \
+  --out-prefix "$HOME/work/ref/GWAS/MDD/full_eur_integration/pgc-mdd2025_eur_v3-49-24-11" \
+  --confirm-no-sample-overlap \
+  --threads 8
+```
+
+Install the final GRCh38 GWAS BCFs under stable names:
+
+```bash
+cp "$HOME/work/ref/GWAS/BD/full_eur_integration/bip2024_eur.full.grch38.bcf" \
+  "$HOME/work/ref/GWAS/BD/bip2024_eur.hg38.bcf"
+cp "$HOME/work/ref/GWAS/BD/full_eur_integration/bip2024_eur.full.grch38.bcf.csi" \
+  "$HOME/work/ref/GWAS/BD/bip2024_eur.hg38.bcf.csi"
+cp "$HOME/work/ref/GWAS/BD/full_eur_integration/bip2024_eur.full.grch38.meta.tsv.gz" \
+  "$HOME/work/ref/GWAS/BD/bip2024_eur.hg38.meta.tsv.gz"
+cp "$HOME/work/ref/GWAS/BD/full_eur_integration/bip2024_eur.full.grch38.meta.tsv.gz.tbi" \
+  "$HOME/work/ref/GWAS/BD/bip2024_eur.hg38.meta.tsv.gz.tbi"
+cp "$HOME/work/ref/GWAS/BD/full_eur_integration/bip2024_eur.full.grch38.prsice.tsv.gz" \
+  "$HOME/work/ref/GWAS/BD/bip2024_eur.hg38.prsice.tsv.gz"
+
+cp "$HOME/work/ref/GWAS/MDD/full_eur_integration/pgc-mdd2025_eur_v3-49-24-11.full.grch38.bcf" \
+  "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.bcf"
+cp "$HOME/work/ref/GWAS/MDD/full_eur_integration/pgc-mdd2025_eur_v3-49-24-11.full.grch38.bcf.csi" \
+  "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.bcf.csi"
+cp "$HOME/work/ref/GWAS/MDD/full_eur_integration/pgc-mdd2025_eur_v3-49-24-11.full.grch38.meta.tsv.gz" \
+  "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.meta.tsv.gz"
+cp "$HOME/work/ref/GWAS/MDD/full_eur_integration/pgc-mdd2025_eur_v3-49-24-11.full.grch38.meta.tsv.gz.tbi" \
+  "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.meta.tsv.gz.tbi"
+cp "$HOME/work/ref/GWAS/MDD/full_eur_integration/pgc-mdd2025_eur_v3-49-24-11.full.grch38.prsice.tsv.gz" \
+  "$HOME/work/ref/GWAS/MDD/pgc-mdd2025_eur_v3-49-24-11.hg38.prsice.tsv.gz"
+```
+
+Integration results:
+
+| Trait | Maximum NE | Applied minimum NE | GRCh38 records | P <= 5e-8 variants |
+|---|---:|---:|---:|---:|
+| BD | 440,999 | 330,749.25 | 6,394,788 | 10,753 |
+| MDD | 1,577,200 | 1,261,760 | 6,656,222 | 36,787 |
+
+Compute updated EUR GraphPred loadings with the same model parameters used for
+the no-23andMe run, so the change isolates the GWAS input. `+pgs` defaults to a
+time-derived seed; the commands below make the seeds recorded by the completed
+runs explicit for exact reproduction:
+
+```bash
+set -euo pipefail
+export BCFTOOLS_PLUGINS=/opt/sw/bcf-plugins
+BCF=/opt/sw/bin/bcftools
+LDGM="$HOME/work/ref/lgdms/GRCh38/1kg_ldgm.EUR.bcf"
+
+cd "$HOME/work/ref/GWAS/BD"
+$BCF +pgs --no-version --threads 8 --seed 1785102265 \
+  --beta-cov 5e-8 --max-alpha-hat2 0.001 --exclude 'FILTER="IFFY"' \
+  bip2024_eur.hg38.bcf "$LDGM" \
+  --output bip2024_eur.hg38.pgs.b5e-8.bcf --output-type b \
+  --log bip2024_eur.hg38.pgs.b5e-8.log --write-index
+
+cd "$HOME/work/ref/GWAS/MDD"
+$BCF +pgs --no-version --threads 8 --seed 1785102085 \
+  --beta-cov 2e-8 --max-alpha-hat2 0.0005 --exclude 'FILTER="IFFY"' \
+  pgc-mdd2025_eur_v3-49-24-11.hg38.bcf "$LDGM" \
+  --output pgc-mdd2025_eur_v3-49-24-11.hg38.pgs.b2e-8.bcf \
+  --output-type b \
+  --log pgc-mdd2025_eur_v3-49-24-11.hg38.pgs.b2e-8.log --write-index
+```
+
+Updated PGS results:
+
+| Trait | PGS records | PGS sample |
+|---|---:|---|
+| BD | 5,227,123 | `BD_2024_FULL_EUR_pgs_a0.5_b5e-08` |
+| MDD | 5,339,102 | `MDD_2025_FULL_EUR_pgs_a0.5_b2e-08` |
+
+The full-data output names deliberately omit `_no23andMe`. The BCF, CSI, log,
+and other generated data products remain outside Git.

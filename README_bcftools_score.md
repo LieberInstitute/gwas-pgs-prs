@@ -85,7 +85,7 @@ The bcftools path uses normalized VCF/BCF records and exact CHROM/POS/REF/ALT ma
 The GraphPred/LDGM scores matched millions of target variants:
 
 ```text
-BPD: 4996043
+BD: 4996043
 MDD: 4832784
 SCZD: 5128978
 ```
@@ -98,7 +98,7 @@ With only 119 MBv samples, selecting the "best" PRSice threshold by observed cas
 
 5. Psychiatric traits are highly polygenic
 
-For BPD, MDD, and SCZD, many small effects across the genome are expected. LD-aware genome-wide methods are designed for this setting. PRSice remains useful as a comparator and sanity check.
+For BD, MDD, and SCZD, many small effects across the genome are expected. LD-aware genome-wide methods are designed for this setting. PRSice remains useful as a comparator and sanity check.
 
 ## Caveats and what not to claim
 
@@ -115,21 +115,25 @@ Reasonable claim:
 For this MBv analysis, the bcftools GraphPred workflow is a well-justified primary PRS because it applies LD-aware GWAS-derived loadings directly to imputed MBv dosages with exact VCF allele matching, while PRSice provides a popular C+T comparator.
 ```
 
-## Project-specific evidence
+## Project-specific evidence from the no-23andMe run
 
-The completed MBv run reported:
+These results describe the completed MBv run with the archived no-23andMe BD
+and MDD loadings. They are historical evidence for the scoring implementation,
+not results from the new full-European loadings.
+
+The run reported:
 
 - input samples: 119;
 - final samples after QC: 119;
 - final variants: 6639276;
 - DS out-of-range sites: 0;
 - KING related pairs >= 0.0884: 0;
-- GraphPred overlaps: BPD 4996043, MDD 4832784, SCZD 5128978.
+- GraphPred overlaps: BD 4996043, MDD 4832784, SCZD 5128978.
 
 Method correlations between GraphPred and PRSice were moderate to high, depending on trait and threshold. For example, Pearson correlations with PRSice threshold 0.05 were:
 
 ```text
-BPD: 0.814091266694973
+BD: 0.814091266694973
 MDD: 0.792858290899503
 SCZD: 0.825026915058488
 ```

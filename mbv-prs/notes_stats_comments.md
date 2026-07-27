@@ -44,6 +44,10 @@ GWAS significant-variant overlap outputs were generated under:
 
 Main files:
 
+Generated membership/long-form CSVs and SVG figures are preserved in the
+external archive documented in `README_generated_outputs.md`; the small
+summary tables and report remain in Git.
+
 - `gwas_sig_overlaps/gwas_significant_overlap_report.md`
 - `gwas_sig_overlaps/gwas_significant_overlap_counts.csv`
 - `gwas_sig_overlaps/gwas_significant_pairwise_overlaps.csv`

@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --job-name=clump_jobs.txt
+#SBATCH --output=./clump_jobs.txt_err_out/jobs_%A_%a.out
+#SBATCH --error=./clump_jobs.txt_err_out/jobs_%A_%a.err
+#SBATCH --partition=shared
+#SBATCH --exclude=compute-[053,054,057,058,062,065,068,069,070,089,095,096,111,175]
+#SBATCH --mem-per-cpu=5G --cpus-per-task=1
+#SBATCH --array=1-22%22
+
+
+echo "**** Job starts ****"
+date
+perl /dcs04/lieber/statsgen/shizhong/scripts/jhpce3/job_batch.pl --jfile clump_jobs.txt --nrun 1 --n $SLURM_ARRAY_TASK_ID
+echo "**** Job ends ****"
+date

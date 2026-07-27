@@ -1,0 +1,1 @@
+##FORMAT=<ID=SI,Number=A,Type=Float,Description="Combined imputation quality is unavailable for the reconstructed public plus 23andMe meta-analysis">
