@@ -17,6 +17,9 @@ The actual run required two fixes now included in the script:
 
 ## Main Outputs
 
+These runtime outputs are intentionally ignored by Git. Preserved copies are
+described in `README_generated_outputs.md`.
+
 - `qc/target_qc_report.tsv`: sample, variant, relatedness, PCA, and overlap summary.
 - `scores_bcftools/mbv_graphpred_scores.tsv`: GraphPred/LDGM scores from `bcftools +score`.
 - `scores_bcftools/mbv_graphpred_scores_z.tsv`: z-scored GraphPred scores.

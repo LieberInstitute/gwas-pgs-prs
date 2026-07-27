@@ -1,12 +1,16 @@
 # Generated outputs kept outside Git
 
-Generated result tables, figures, reports, and similar analysis work products
-are excluded from the repository. New repo-adjacent work products should be
-written under the ignored directory:
+Generated datasets, figures, reports, logs, and similar analysis work products
+are excluded from the repository. New workflows should write repo-adjacent
+work products under the ignored directory:
 
 ```text
 mbv-prs/generated/
 ```
+
+Existing reproducibility scripts retain their documented output paths, such as
+`qc/`, `scores_bcftools/`, `prsice/out/`, and `prs_diagnosis_assoc/`. These are
+also designated work-product directories and are ignored by Git.
 
 Large or shared preserved MBv files are stored under:
 
@@ -15,5 +19,6 @@ Large or shared preserved MBv files are stored under:
 ```
 
 That directory preserves repository-relative paths and contains `SHA256SUMS`
-for integrity checks. Git retains reusable code, documentation, configuration,
+for integrity checks. It includes legacy outputs removed from Git when this
+policy was adopted. Git retains reusable code, documentation, configuration,
 and small test fixtures.
