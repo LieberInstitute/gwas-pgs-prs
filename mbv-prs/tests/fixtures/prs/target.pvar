@@ -1,0 +1,4 @@
+#CHROM	POS	ID	REF	ALT
+1	100	target_100	A	G
+1	200	target_200	A	C
+1	300	target_300	G	A

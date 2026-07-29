@@ -1,0 +1,4 @@
+CHR	BP	SNP	A1	A2	BETA	P
+chr1	100	chr1:100:A:G	G	A	0.10	0.01
+1	200	chr1:200:C:T	T	C	-0.20	0.20
+chr1	300	chr1:300:G:A	A	G	0.05	0.50

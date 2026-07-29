@@ -1,5 +1,22 @@
 # MBv PRS Results
 
+## Integrated 23andMe Sensitivity Workflow
+
+The current BD and MDD full-versus-no23 analysis is documented in
+`PRS_23andMe_impact_protocol.md` and run with:
+
+```bash
+scripts/run_mbv_prs_23andme_impact.sh all
+```
+
+It runs historical and harmonized Shizhong-style C+T, harmonized PRSice, and
+existing LDGM/GraphPred PGS weights for all 119 donors. All manifests, target
+exports, scores, diagnostics, figures, and the generated report are written to
+the ignored `generated/prs_23andme_impact/` directory.
+
+The reconstructed full BD input is labeled pre-DENTIST and is not described as
+the exact final paper GWAS. See `BD-DENTIST-issue-v7.0-vs-v7.2.md`.
+
 ## What Was Run
 
 The approved plan is in `plan_26-05-10_20-37_master.md`.
