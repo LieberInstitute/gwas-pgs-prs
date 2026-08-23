@@ -188,8 +188,8 @@ method correlations, and GraphPred-to-threshold correlations.
 ## BD Qualification
 
 The reconstructed full BD base and PGS inputs are usable for sensitivity
-analysis but are internally identified as pre-DENTIST. The v7.0 23andMe
-association file was paired with supplied v7.2 European annotations, and the
-paper's final HRC-based post-meta-analysis DENTIST filter has not been rerun.
-Do not describe this reconstruction as the exact final paper summary statistics.
-See `BD-DENTIST-issue-v7.0-vs-v7.2.md`.
+analysis but are internally identified as pre-DENTIST. The matching v7.0
+association and annotation releases are used with the verified `-1` annotation
+position correction. The paper's final HRC-based post-meta-analysis DENTIST
+filter has not been rerun. Do not describe this reconstruction as the exact
+final paper summary statistics. See `BD-DENTIST-issue-v7.0-vs-v7.2.md`.

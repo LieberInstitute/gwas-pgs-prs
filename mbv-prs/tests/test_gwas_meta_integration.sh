@@ -26,6 +26,14 @@ EOF
 paste "$work/annotation.tsv" "$work/association.tsv" | \
     awk -f "$root/scripts/prepare_23andme_gwas.awk" > "$work/23me.tsv"
 
+## verify the release-specific coordinate conversion independently
+paste "$work/annotation.tsv" "$work/association.tsv" | \
+    awk -v position_offset=-1 -f "$root/scripts/prepare_23andme_gwas.awk" \
+    > "$work/23me.offset.tsv"
+awk 'NR == 1 {next} {expected[1]=752565; expected[2]=752720; expected[3]=999999;
+    if ($2 != expected[NR-1]) bad=1} END {exit (bad || NR != 4)}' \
+    "$work/23me.offset.tsv"
+
 cat > "$work/public.tsv" <<'EOF'
 CHR	BP	SNP	A1	A2	BETA	SE	P	NCAS	NCON	NEFF
 1	752566	rs3094315	A	G	0.1	0.2	0.6171	50	100	133.3333333

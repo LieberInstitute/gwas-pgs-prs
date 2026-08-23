@@ -1,5 +1,6 @@
 BEGIN {
     FS = OFS = "\t"
+    position_offset += 0
     print "CHR", "BP", "SNP", "A1", "A2", "BETA", "SE", "P", "NCAS", "NCON", "NEFF"
 }
 
@@ -88,7 +89,13 @@ FNR == 1 {
 
     ## 23andMe effect is log odds per alphabetically higher B allele
     neff = 4 * ncase * ncontrol / (ncase + ncontrol)
-    print chrom_number, $6, $4, allele[2], allele[1], $22, $23, $21,
+    bp = $6 + position_offset
+    if (bp < 1 || bp != int(bp)) {
+        invalid_position++
+        next
+    }
+
+    print chrom_number, bp, $4, allele[2], allele[1], $22, $23, $21,
         ncase, ncontrol, sprintf("%.10g", neff)
     kept++
 }
@@ -103,6 +110,7 @@ END {
     print "  invalid_statistics=" invalid_statistics + 0 > "/dev/stderr"
     print "  invalid_sample_size=" invalid_sample_size + 0 > "/dev/stderr"
     print "  invalid_source=" invalid_source + 0 > "/dev/stderr"
+    print "  invalid_position=" invalid_position + 0 > "/dev/stderr"
     print "  id_errors=" id_errors + 0 > "/dev/stderr"
 
     if (failed || id_errors)

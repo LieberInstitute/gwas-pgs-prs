@@ -1,20 +1,21 @@
-# BD Delivery: DENTIST and v7.0/v7.2 Issues
+# BD Delivery: DENTIST and v7.0/v7.2 Audit
 
 ## Bottom Line
 
 The delivered O'Connell 2025 European BD association file is the 23andMe-only
 component, not the final full-European meta-analysis described in the paper's
-data-availability statement. It is labeled release v7.0, but the delivery does
-not include the corresponding European v7.0 annotation tables. The only
-European annotation tables supplied are v7.2.
+data-availability statement. The matching European v7.0 annotation archive was
+available in a separate, undocumented `7.0 Annotations` folder in the shared
+Drive. It was recovered on 2026-07-30.
 
 Our reconstructed fixed-effect integration can be used for a PRS sensitivity
-analysis, but it is not yet an exact copy of the paper's final statistics for
-two independent reasons:
+analysis, but it is not yet an exact copy of the paper's final statistics. The
+remaining material reason is that the paper's final post-meta-analysis
+HRC-based DENTIST filtering has not been applied to the reconstruction.
 
-1. cross-release `all.data.id` and allele stability is not formally documented;
-2. the paper's final post-meta-analysis HRC-based DENTIST filtering has not been
-   applied to the reconstructed meta-analysis.
+The v7.0/v7.2 mapping concern has been resolved empirically across all
+57,611,376 rows. IDs, rsIDs, chromosomes, alleles, ploidy, and strand are
+identical. v7.0 positions require the coordinate conversion documented below.
 
 ## Archive Audit
 
@@ -36,38 +37,71 @@ bipolar_hits_2.html
 bipolar_hits_3.html
 ```
 
-The original delivery ZIPs contain the European v7.2 annotation package and
-BD association TARs. They do not contain European v7.0 `all_snp_info`,
-`gt_snp_stat`, or `im_snp_stat` annotation files. A downloaded v7.0 Africa
-annotation archive is irrelevant to the European association file.
-
-The available European annotation files are:
+The BD study TAR does not contain annotations. The shared Drive separately
+contains `7.0 Annotations/v7.0_europe.tar.gz`, but provides no manifest linking
+the study folder to that annotation folder. The recovered archive is:
 
 ```text
-7.2-Annotations/v7.2_europe/all_snp_info.txt.gz
-7.2-Annotations/v7.2_europe/gt_snp_stat.txt.gz
-7.2-Annotations/v7.2_europe/im_snp_stat.txt.gz
+/home/gpertea/work/ref/GWAS/23andMe_MDD_BD/
+  7.0-Annotations/v7.0_europe.tar.gz
+SHA-256: fcd43848d62d97c89f0eac2a0cce148675f7ea07f8e9a83a1eb37b1e7d1dba7d
 ```
 
-No delivered file is a DENTIST exclusion list.
+It passed a complete `7z t` archive test and was extracted without overwriting
+v7.2. The large text members were individually compressed in place:
+
+```text
+7.0-Annotations/v7.0_europe/all_snp_info.txt.gz
+7.0-Annotations/v7.0_europe/gt_snp_stat.txt.gz
+7.0-Annotations/v7.0_europe/im_snp_stat.txt.gz
+7.0-Annotations/v7.0_europe/23andMe_GWAS_Results_v7.0.docx
+7.0-Annotations/v7.0_europe/23andMe_Platform_Annotations_v7.0.docx
+```
+
+At the start of this audit, no byte-identical v7.0 document or data payload
+existed under `23andMe_MDD_BD`. Existing generic annotation files decompress to
+different v7.2 content. The current filesystem cannot establish whether v7.0
+files had existed earlier and were overwritten. No supplied file is a DENTIST
+exclusion list.
+
+Pre-extraction hashes, raw/compressed payload hashes, and the complete
+cross-release comparison are retained under
+`7.0-Annotations/audit_2026-07-30/`.
 
 ## DOCX Audit
 
-The only relevant annotation documentation is also v7.2:
+The matching documentation is:
 
 ```text
-7.2-Annotations/v7.2_europe/23andMe_GWAS_Results_v7.2.docx
-7.2-Annotations/v7.2_europe/23andMe_Platform_Annotations_v7.2.docx
+7.0-Annotations/v7.0_europe/23andMe_GWAS_Results_v7.0.docx
+7.0-Annotations/v7.0_europe/23andMe_Platform_Annotations_v7.0.docx
 ```
 
-These documents state that association rows align with their corresponding
-merged annotation release and that `all.data.id` is the unique integer key.
-They do not state that `all.data.id`, coordinates, or alleles are stable across
-v7.0 and v7.2. They do not mention DENTIST.
+The platform document states that the merged annotation has the same variant
+count and ordering as the corresponding association result, and defines
+`all.data.id` as the unique integer key. It does not specify whether its
+`position` field is zero- or one-based and does not mention DENTIST.
 
-The reconstructed BD integration therefore requires an explicit
-`--allow-bd-v7.2-annotations` acknowledgement. Matching checked paper sentinels
-supports the mapping empirically, but does not replace release provenance.
+A full v7.0-versus-v7.2 row comparison found:
+
+| Check | Rows |
+|---|---:|
+| Annotation rows | 57,611,376 |
+| Internal-ID mismatches | 0 |
+| rsID mismatches | 0 |
+| Chromosome mismatches | 0 |
+| Allele mismatches | 0 |
+| Ploidy or strand mismatches | 0 |
+| Position differences | 54,940,299 |
+| BD `pass=Y` autosomal SNVs retained by integration | 21,137,709 |
+| Retained SNVs with position differences | 21,137,709 |
+
+For every retained SNV, v7.0 is one base greater than the correct GRCh37 VCF
+position. For example, v7.0 places `rs3131972` at 1:752722, while the GRCh37
+reference/public BD BCF and v7.2 place it at 1:752721. The integration script
+therefore applies an explicit v7.0 annotation-position offset of `-1` before
+normalization. The v7.2 override remains only to reproduce the earlier
+provisional run.
 
 ## DENTIST
 
@@ -108,7 +142,7 @@ Until corrected, use these labels:
 
 ## Draft Email to 23andMe
 
-**Subject:** O'Connell 2025 BD request: full European meta-analysis and v7.0 annotations
+**Subject:** O'Connell 2025 BD request: final full European meta-analysis
 
 Hello,
 
@@ -123,12 +157,6 @@ Could you please provide the final DENTIST-filtered full-European meta-analysis
 summary statistics used in O'Connell et al. 2025, including genomic build,
 effect/non-effect alleles, beta or odds ratio, standard error, p value, and
 variant-specific effective sample size?
-
-If that final file is not available through 23andMe, please provide the
-European v7.0 annotation files corresponding to `bipolar.dat.gz`. The delivery
-contains European v7.2 annotations only. Alternatively, please provide written
-confirmation that `all.data.id`, coordinates, allele labels, and association
-row ordering are unchanged between European v7.0 and v7.2.
 
 Please also confirm whether any DENTIST exclusion list or other final
 post-meta-analysis QC file should have been included in the delivery.
@@ -154,9 +182,5 @@ Could you please provide either:
 2. the DENTIST exclusion list plus the exact software version, command-line
    parameters, HRC v1.0 reference files and build, variant-matching rules, and
    any additional post-meta-analysis filters?
-
-The 23andMe association file is labeled v7.0 while the supplied European
-annotations are v7.2. Any confirmation of the annotation release used in the
-paper or cross-release ID/allele stability would also be helpful.
 
 Thank you.

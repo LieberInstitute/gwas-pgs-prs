@@ -20,8 +20,9 @@ usage() {
 ##   --public FILE                  override public no-23andMe summary statistics
 ##   --23me-assoc FILE              override 23andMe association file
 ##   --23me-annotation FILE         override 23andMe all_snp_info file
+##   --annotation-position-offset N add N to supplied annotation positions
 ##   --min-ne-fraction FLOAT        override paper effective-N threshold
-##   --allow-bd-v7.2-annotations    acknowledge BD v7.0/v7.2 mapping risk
+##   --allow-bd-v7.2-annotations    reproduce a noncanonical BD v7.2 mapping run
 ##   --exclude-list FILE            canonical GRCh37 CHROM POS list to exclude
 ##   --threads INT                  worker threads [4]
 ##   --resume                       reuse existing nonempty stage outputs
@@ -64,6 +65,8 @@ out_prefix=
 public=
 assoc=
 annotation=
+annotation_was_overridden=0
+annotation_position_offset=
 min_ne_fraction=
 confirm_independent=0
 allow_bd_annotation_mismatch=0
@@ -78,7 +81,8 @@ while (($#)); do
         --out-prefix) out_prefix=${2:-}; shift 2 ;;
         --public) public=${2:-}; shift 2 ;;
         --23me-assoc) assoc=${2:-}; shift 2 ;;
-        --23me-annotation) annotation=${2:-}; shift 2 ;;
+        --23me-annotation) annotation=${2:-}; annotation_was_overridden=1; shift 2 ;;
+        --annotation-position-offset) annotation_position_offset=${2:-}; shift 2 ;;
         --min-ne-fraction) min_ne_fraction=${2:-}; shift 2 ;;
         --confirm-no-sample-overlap) confirm_independent=1; shift ;;
         --allow-bd-v7.2-annotations) allow_bd_annotation_mismatch=1; shift ;;
@@ -109,12 +113,25 @@ extra_headers="$script_dir/gwas_meta_extra_headers.txt"
 if [[ "$trait" == "BD" ]]; then
     public=${public:-$root/BD/bip2024_eur_no23andMe.gz}
     assoc=${assoc:-$delivery/Bipolar-Disorder-O_Connell-2025/OConnell_2025_bipolar_european-7.0/bipolar.dat.gz}
-    annotation=${annotation:-$delivery/7.2-Annotations/v7.2_europe/all_snp_info.txt.gz}
+    bd_v70_annotation=$delivery/7.0-Annotations/v7.0_europe/all_snp_info.txt.gz
+    annotation=${annotation:-$bd_v70_annotation}
     min_ne_fraction=${min_ne_fraction:-0.75}
     final_sample=BD_2024_FULL_EUR
     expected_max_ne=440934
-    ((allow_bd_annotation_mismatch == 1)) || die \
-        "BD association is v7.0 but annotation is v7.2; obtain v7.0 mapping or pass --allow-bd-v7.2-annotations"
+    if [[ "$annotation" == "$bd_v70_annotation" ]]; then
+        annotation_position_offset=${annotation_position_offset:--1}
+        annotation_release_note="BD used matching v7.0 association and annotation releases."
+    elif [[ "$annotation" == "$delivery/7.2-Annotations/v7.2_europe/all_snp_info.txt.gz" ]]; then
+        annotation_position_offset=${annotation_position_offset:-0}
+        ((allow_bd_annotation_mismatch == 1)) || die \
+            "BD association is v7.0 but annotation is v7.2; use the v7.0 annotation or pass --allow-bd-v7.2-annotations"
+        annotation_release_note="BD used noncanonical v7.2 annotations with the v7.0 association file."
+    else
+        ((annotation_was_overridden == 1)) || die "internal error resolving BD annotation"
+        [[ -n "$annotation_position_offset" ]] || die \
+            "a custom BD annotation requires --annotation-position-offset"
+        annotation_release_note="BD used a custom annotation with an operator-specified position offset."
+    fi
 else
     public=${public:-$root/MDD/pgc-mdd2025_no23andMe_eur_v3-49-24-11.tsv.gz}
     assoc=${assoc:-$delivery/MDD-Adams-2025/Adams_2025_mdd_european-7.2/mdd.dat.gz}
@@ -122,8 +139,12 @@ else
     min_ne_fraction=${min_ne_fraction:-0.80}
     final_sample=MDD_2025_FULL_EUR
     expected_max_ne=1577206
+    annotation_position_offset=${annotation_position_offset:-0}
+    annotation_release_note="MDD used matching v7.2 association and annotation releases."
 fi
 
+[[ "$annotation_position_offset" =~ ^-?[0-9]+$ ]] || \
+    die "--annotation-position-offset must be an integer"
 awk -v value="$min_ne_fraction" 'BEGIN{exit !(value > 0 && value <= 1)}' || \
     die "--min-ne-fraction must be in (0,1]"
 
@@ -166,7 +187,8 @@ if [[ ! -s "$prepared" ]]; then
     prepared_tmp="$prepared.partial.$$"
     [[ ! -e "$prepared_tmp" ]] || die "partial output exists: $prepared_tmp"
     paste <(stream_file "$annotation") <(stream_file "$assoc") | \
-        awk -f "$prepare_awk" | bgzip -@ "$threads" -c > "$prepared_tmp"
+        awk -v position_offset="$annotation_position_offset" -f "$prepare_awk" | \
+        bgzip -@ "$threads" -c > "$prepared_tmp"
     mv "$prepared_tmp" "$prepared"
 else
     log "reusing $prepared"
@@ -314,6 +336,7 @@ participants. No genomic-control multiplier was applied to the delivered
 - Effect model: standard-error inverse-variance fixed effect
 - Variant scope: QC-passing, biallelic autosomal SNVs
 - Effect scale: log odds
+- Annotation-position offset applied before normalization: $annotation_position_offset
 - GRCh37 effective-N inclusion fraction: $min_ne_fraction
 - Observed maximum NE: $max_ne
 - Expected paper-scale maximum NE: $expected_max_ne
@@ -339,9 +362,7 @@ P <= 5e-8. These are variant counts, not independent signals or loci.
   excludes them because exact REF/ALT sequence alleles cannot be inferred from
   D/I alone. The public BD and MDD BCFs contain only 2 and 1 indels,
   respectively, so this does not remove a substantial shared variant class.
-- BD used the supplied v7.2 annotation with a v7.0 association file only when
-  \`--allow-bd-v7.2-annotations\` was explicitly supplied. This remains a
-  provenance risk until 23andMe supplies v7.0 annotation or confirms stable IDs.
+- $annotation_release_note
 - The BD paper's post-meta DENTIST QC is not reproduced unless its rejected
   GRCh37 variants are supplied with \`--exclude-list\`.
 - Heterogeneity across the two aggregate components is calculated, but the

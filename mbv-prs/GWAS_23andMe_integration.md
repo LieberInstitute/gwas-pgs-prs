@@ -81,8 +81,9 @@ correction. The script does not do so.
 
 1. Validates input files, tools, headers, and the assertion of no sample
    overlap.
-2. Streams the 57.6 million annotation and association rows together and
-   verifies that every internal ID remains aligned.
+2. Streams the 57.6 million annotation and association rows together, verifies
+   every internal ID, and applies the documented release-specific coordinate
+   offset before normalization. BD v7.0 requires `-1`; MDD v7.2 requires `0`.
 3. Keeps `pass=Y`, biallelic autosomal SNVs with valid beta, SE, P, case count,
    and control count.
 4. Computes per-variant 23andMe effective N as
@@ -119,19 +120,22 @@ scripts/integrate_23andme_gwas.sh \
   --threads 8
 ```
 
-BD was delivered as association release v7.0 without v7.0 European
-annotations. The only supplied European annotation is v7.2. The IDs appear
-stable at checked published variants, but this is not formally guaranteed.
-The script therefore stops unless this risk is explicitly acknowledged:
+BD uses its matching v7.0 European association and annotation releases. The
+v7.0 annotation positions are one base greater than GRCh37 VCF positions for
+the retained autosomal SNVs, so the BD profile applies an explicit `-1`
+offset:
 
 ```bash
 scripts/integrate_23andme_gwas.sh \
   --trait BD \
   --out-prefix /home/gpertea/work/ref/GWAS/BD/full_eur_integration/bip2024_eur \
   --confirm-no-sample-overlap \
-  --allow-bd-v7.2-annotations \
   --threads 8
 ```
+
+`--allow-bd-v7.2-annotations` is retained only to reproduce the earlier
+provisional mapping run. A complete cross-release audit found identical IDs,
+rsIDs, chromosomes, alleles, ploidy, and strand across all 57,611,376 rows.
 
 `--resume` reuses existing nonempty stage outputs. It is intentionally not a
 force-overwrite option. Each run preserves public, 23andMe, unfiltered-meta,
@@ -153,11 +157,12 @@ For an output prefix `PREFIX`:
 | `PREFIX.full.grch38.prsice.tsv.gz` | PRSice base table |
 | `PREFIX.integration-report.md` | provenance, thresholds, counts, caveats |
 
-## Completed production run
+## Completed production runs
 
-The 2026-07-26 runs processed all 57,611,376 paired annotation/association
-rows for each trait with zero ID-alignment, statistic, sample-size, or source
-errors.
+MDD completed on 2026-07-26. BD was rebuilt from the recovered matching v7.0
+annotation on 2026-07-30. Both runs processed all 57,611,376 paired
+annotation/association rows with zero ID-alignment, statistic, sample-size,
+source, or corrected-position errors.
 
 | Trait | 23andMe autosomal SNVs prepared | Maximum NE | Applied minimum NE | Final GRCh38 variants | Variants at P <= 5e-8 |
 |---|---:|---:|---:|---:|---:|
@@ -178,6 +183,13 @@ Stable installed files are:
 All stable full-data names omit `_no23andMe`. Stage files, checksums, and exact
 run-specific counts are retained under each trait's `full_eur_integration`
 directory. These generated data files are not part of the Git repository.
+
+The corrected v7.0 BD prepared component, canonical meta table, and PRSice
+table are byte-for-byte identical to the earlier v7.2-mapped products. The
+final BCF record stream is also identical; only bcftools run timestamps in the
+BCF header differ. The installed BD BCF was retained to preserve the exact hash
+already recorded by downstream analyses. The old run is preserved under
+`BD/full_eur_integration_v7.2_provisional_2026-07-26/`.
 
 The completed EUR LDGM `+pgs` outputs are:
 
@@ -202,8 +214,6 @@ both BD and MDD. PRSice should be run with `--beta`.
 - Symbolic 23andMe `D/I` alleles are excluded because they do not identify an
   exact sequence allele. The current public BD and MDD BCFs contain only 2 and
   1 indels, respectively, so almost all shared variants are SNVs.
-- BD remains provisional until v7.0 annotations or an ID-stability statement
-  is obtained.
 - BD paper-level QC also used DENTIST after meta-analysis. DENTIST is not
   installed locally. A paper-provided GRCh37 exclusion list can be applied with
   `--exclude-list`; without it, the result is a valid fixed-effect integration
@@ -231,6 +241,6 @@ the integration report.
 - [Adams et al. MDD paper](https://doi.org/10.1016/j.cell.2024.12.002)
 - [`bcftools +metal` implementation](https://github.com/freeseek/score)
 
-The method is established best practice. The remaining uncertainty is not the
-meta-analysis formula; it is source provenance and exact reproduction of the
-BD annotation and post-meta QC.
+The method is established best practice. The remaining BD uncertainty is not
+the meta-analysis formula or annotation mapping; it is exact reproduction of
+the paper's post-meta-analysis DENTIST QC.
